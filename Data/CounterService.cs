@@ -1,21 +1,40 @@
 namespace BlazorTrades.Data;
+using System.Reactive.Linq;
+using System.Reactive.Concurrency;
 
-public class CounterService : IDisposable
+public class CounterService
 {
+    private readonly ILogger<CounterService> _logger;
+    private readonly IHostApplicationLifetime _appLifetime;
     private readonly Random _rnd = new();
-    private readonly Timer? _timer;
-    
     public event Action? OnChange;
 
-    public CounterService()
+    public CounterService(
+        ILogger<CounterService> logger,
+        IHostApplicationLifetime appLifetime)
     {
-        _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+        _logger = logger;
+        _appLifetime = appLifetime;
+        
+        Task.Run(Run);
     }
-    
-    public int CurrentValue { get; set; }
-    
-    private void DoWork(object? state)
+
+    public int CurrentValue { get; private set; }
+
+    private void Run()
     {
+        var cts = CancellationTokenSource.CreateLinkedTokenSource(_appLifetime.ApplicationStopping);
+        
+        Observable
+            .Interval(TimeSpan.FromSeconds(1))
+            .ObserveOn(TaskPoolScheduler.Default)
+            .Subscribe(_ => DoWork(cts.Token), cts.Token);
+    }
+
+    private void DoWork(CancellationToken cancelToken)
+    {
+        cancelToken.ThrowIfCancellationRequested();
+        _logger.LogInformation("Updating value");
         UpdateValue();
         OnChange?.Invoke();
     }
@@ -23,10 +42,5 @@ public class CounterService : IDisposable
     private void UpdateValue()
     {
         CurrentValue = _rnd.Next(100);
-    }
-
-    public void Dispose()
-    {
-        _timer?.Dispose();
     }
 }

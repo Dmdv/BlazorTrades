@@ -1,7 +1,7 @@
 namespace BlazorTrades.Data;
 
 /// <summary>
-/// Data row displayed at client 
+/// Data row displayed at client
 /// </summary>
 internal record StockView(int Position, string Ticker, decimal SpotPrice, int Qty1, int Qty0, int QtyDelta);
 
