@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>BlazorTrades</AssemblyName>
+    <RootNamespace>BlazorTrades</RootNamespace>
+    <PackageId>BlazorTrades</PackageId>
+    <Authors>Dmitry Dyachkov</Authors>
+    <Company>BlazorTrades</Company>
+    <Product>BlazorTrades</Product>
+  </PropertyGroup>
+
+</Project>
