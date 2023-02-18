@@ -1,12 +1,12 @@
 ﻿@page "/fetchdata"
 @using BlazorTrades.Data
-@inject WeatherForecastService ForecastService
+@inject TradingService TradingService
 
 <PageTitle>Market Data</PageTitle>
 
 <h2>Simulated trading view</h2>
 
-@if (_forecasts == null)
+@if (_stocks == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -15,20 +15,24 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>Position</th>
+                <th>Ticker</th>
+                <th>Spot Price</th>
+                <th>Qty [T - 1]</th>
+                <th>Qty [T - 0]</th>
+                <th>Qty Change</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in _forecasts)
+            @foreach (var stock in _stocks)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@stock.Model.Position</td>
+                    <td>@stock.Model.Ticker</td>
+                    <td>@stock.Model.SpotPrice</td>
+                    <td>@stock.Model.Qty1</td>
+                    <td>@stock.Model.Qty0</td>
+                    <td>@stock.Model.QtyDelta</td>
                 </tr>
             }
         </tbody>
@@ -36,10 +40,20 @@ else
 }
 
 @code {
-    private WeatherForecast[]? _forecasts;
+    private IEnumerable<StockMarketViewModel>? _stocks;
 
     protected override async Task OnInitializedAsync()
     {
-        _forecasts = await ForecastService.GetForecastAsync(DateOnly.FromDateTime(DateTime.Now));
+        _stocks = await TradingService.GetStockAsync();
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        foreach (var stock in _stocks!)
+        {
+            stock.StateUpdated += async () => await InvokeAsync(StateHasChanged);
+        }
+
+        return base.OnAfterRenderAsync(firstRender);
     }
 }

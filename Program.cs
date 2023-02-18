@@ -5,9 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddLogging();
-builder.Services.AddSingleton<WeatherForecastService>();
-builder.Services.AddSingleton<CounterService>();
-builder.Services.AddSingleton<EngineService>();
+builder.Services.AddSingleton<TradingService>();
 
 var app = builder.Build();
 

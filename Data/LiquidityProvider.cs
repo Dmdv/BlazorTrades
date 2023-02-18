@@ -1,16 +1,21 @@
 namespace BlazorTrades.Data;
 
-public class LiquidityProvider
+public interface ILiquidityProvider
+{
+    (decimal Price, decimal Volume) GenerateTrade();
+    public string Ticker { get; }
+}
+
+public class LiquidityProvider : ILiquidityProvider
 {
     private const decimal MinPriceChange = 0.01M;
     private const decimal MaxPriceChange = 0.05M;
-
-    private readonly string _tickerSymbol;
+    
     private readonly Random _random;
 
     public LiquidityProvider(string tickerSymbol)
     {
-        _tickerSymbol = tickerSymbol;
+        Ticker = tickerSymbol;
         _random = new Random();
     }
 
@@ -28,6 +33,8 @@ public class LiquidityProvider
 
         return (tradePrice, tradeVolume);
     }
+
+    public string Ticker { get; }
 
     private decimal GetLastTradePrice()
     {
