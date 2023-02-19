@@ -49,7 +49,7 @@ public class StockMarketViewModel
         tokenSource.ThrowIfCancellationRequested();
         var (price, volume) = _provider.GenerateTrade();
         Model.SpotPrice = price;
-        Model.Qty1 = (int)volume;
+        Model.Qty1 = volume;
         Model.QtyDelta = Model.Qty0 - Model.Qty1;
         
         StateUpdated?.Invoke();

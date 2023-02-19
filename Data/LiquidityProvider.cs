@@ -2,7 +2,7 @@ namespace BlazorTrades.Data;
 
 public interface ILiquidityProvider
 {
-    (decimal Price, decimal Volume) GenerateTrade();
+    Trade GenerateTrade();
     public string Ticker { get; }
 }
 
@@ -10,7 +10,7 @@ public class LiquidityProvider : ILiquidityProvider
 {
     private const decimal MinPriceChange = 0.01M;
     private const decimal MaxPriceChange = 0.05M;
-    
+
     private readonly Random _random;
 
     public LiquidityProvider(string tickerSymbol)
@@ -19,10 +19,10 @@ public class LiquidityProvider : ILiquidityProvider
         _random = new Random();
     }
 
-    public (decimal Price, decimal Volume) GenerateTrade()
+    public Trade GenerateTrade()
     {
         var lastTradePrice = GetLastTradePrice();
-        var priceChange = lastTradePrice * 
+        var priceChange = lastTradePrice *
                           (decimal)_random.NextDouble() * (MaxPriceChange - MinPriceChange) +
                           MinPriceChange;
         // Determine whether the price is rising or falling
@@ -31,8 +31,8 @@ public class LiquidityProvider : ILiquidityProvider
         // Generate a random trading volume between 1 and 10000
         var tradeVolume = (long)(_random.NextDouble() * 10000) + 1;
 
-        return (
-            decimal.Round(tradePrice, 3), 
+        return new Trade(
+            decimal.Round(tradePrice, 3),
             decimal.Round(tradeVolume, 3));
     }
 
