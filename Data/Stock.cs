@@ -18,7 +18,7 @@ public class StockMarketViewModel
     private readonly ILiquidityProvider _provider;
     private readonly IHostApplicationLifetime _appLifetime;
 
-    public event Action? StateUpdated;
+    public event Action StateUpdated = delegate {};
 
     public StockMarketViewModel(Stock stock, ILiquidityProvider provider, IHostApplicationLifetime appLifetime)
     {
@@ -52,6 +52,6 @@ public class StockMarketViewModel
         Model.Qty1 = volume;
         Model.QtyDelta = Model.Qty0 - Model.Qty1;
         
-        StateUpdated?.Invoke();
+        StateUpdated.Invoke();
     }
 }
