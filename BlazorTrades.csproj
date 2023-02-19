@@ -10,6 +10,7 @@
     <Authors>Dmitry Dyachkov</Authors>
     <Company>BlazorTrades</Company>
     <Product>BlazorTrades</Product>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
