@@ -31,7 +31,9 @@ public class LiquidityProvider : ILiquidityProvider
         // Generate a random trading volume between 1 and 10000
         var tradeVolume = (long)(_random.NextDouble() * 10000) + 1;
 
-        return (tradePrice, tradeVolume);
+        return (
+            decimal.Round(tradePrice, 3), 
+            decimal.Round(tradeVolume, 3));
     }
 
     public string Ticker { get; }
