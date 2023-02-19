@@ -41,7 +41,7 @@ public class TradingService
                         volume,
                         volume,
                         0),
-                    new LiquidityProvider(ticker.Name),
+                    liquidityProvider,
                     _appLifetime);
 
                 Task.Run(() => stockMarket.Run());
