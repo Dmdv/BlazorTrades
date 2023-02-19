@@ -34,9 +34,12 @@ public class StockMarketViewModel
     public void Run()
     {
         var cts = CancellationTokenSource.CreateLinkedTokenSource(_appLifetime.ApplicationStopping);
+
+        Random rnd = new();
+        var nextDouble = 1000 * rnd.NextDouble();
         
         Observable
-            .Interval(TimeSpan.FromSeconds(1))
+            .Interval(TimeSpan.FromMilliseconds(nextDouble))
             .ObserveOn(TaskPoolScheduler.Default)
             .Subscribe(_ => DoWork(cts.Token), cts.Token);
     }

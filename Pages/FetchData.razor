@@ -1,5 +1,6 @@
 ﻿@page "/fetchdata"
 @using BlazorTrades.Data
+@using System.Reactive.Linq
 @inject TradingService TradingService
 
 <PageTitle>Market Data</PageTitle>
@@ -45,15 +46,14 @@ else
     protected override async Task OnInitializedAsync()
     {
         _stocks = await TradingService.GetStockAsync();
-    }
-
-    protected override Task OnAfterRenderAsync(bool firstRender)
-    {
+        
         foreach (var stock in _stocks!)
         {
-            stock.StateUpdated += async () => await InvokeAsync(StateHasChanged);
+            Observable.FromEvent(
+                h => stock.StateUpdated += h,
+                h => stock.StateUpdated -= h)
+                .Throttle(TimeSpan.FromMilliseconds(200))
+                .Subscribe(_ => InvokeAsync(StateHasChanged).ConfigureAwait(false));
         }
-
-        return base.OnAfterRenderAsync(firstRender);
     }
 }

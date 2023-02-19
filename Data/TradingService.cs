@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+
 namespace BlazorTrades.Data;
 
 /// <summary>
@@ -6,7 +8,7 @@ namespace BlazorTrades.Data;
 public class TradingService
 {
     private readonly IHostApplicationLifetime _appLifetime;
-    private IEnumerable<StockMarketViewModel>? _stockViewModels;
+    private ImmutableList<StockMarketViewModel>? _stockViewModels;
 
     public TradingService(IHostApplicationLifetime appLifetime)
     {
@@ -41,15 +43,15 @@ public class TradingService
                         0),
                     new LiquidityProvider(ticker.Name),
                     _appLifetime);
-                
-                stockMarket.Run();
-                
+
+                Task.Run(() => stockMarket.Run());
+
                 return stockMarket;
-            }).ToArray();
+            }).ToImmutableList();
     }
 
-    public Task<IEnumerable<StockMarketViewModel>> GetStockAsync()
+    public ValueTask<ImmutableList<StockMarketViewModel>> GetStockAsync()
     {
-        return Task.FromResult(_stockViewModels!);
+        return ValueTask.FromResult(_stockViewModels!);
     }
 }
