@@ -5,7 +5,7 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["BlazorTrades/BlazorTrades.csproj", "BlazorTrades/"]
+COPY ["BlazorTrades.csproj", "BlazorTrades.csproj"]
 RUN dotnet restore "BlazorTrades.csproj"
 COPY . .
 WORKDIR "/src/"
