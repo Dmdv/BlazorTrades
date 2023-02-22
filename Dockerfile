@@ -1,11 +1,10 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+ENV ASPNETCORE_URLS="http://0.0.0.0:5287/"
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["BlazorTrades/BlazorTrades.csproj", "BlazorTrades/"]
+COPY ["BlazorTrades.csproj", "BlazorTrades.csproj"]
 RUN dotnet restore "BlazorTrades.csproj"
 COPY . .
 WORKDIR "/src/"
@@ -16,5 +15,6 @@ RUN dotnet publish "BlazorTrades.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
+EXPOSE 5287
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "BlazorTrades.dll"]
