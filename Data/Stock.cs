@@ -13,7 +13,7 @@ public record Stock(int Position, string Ticker, decimal SpotPrice, decimal Qty1
     public decimal QtyDelta { get; set; } = QtyDelta;
 }
 
-public class StockMarketViewModel
+public class StockMarketViewModel : IDisposable
 {
     private readonly ILiquidityProvider _provider;
     private readonly IHostApplicationLifetime _appLifetime;
@@ -53,5 +53,9 @@ public class StockMarketViewModel
         Model.QtyDelta = Model.Qty0 - Model.Qty1;
         
         StateUpdated.Invoke();
+    }
+
+    public void Dispose()
+    {
     }
 }

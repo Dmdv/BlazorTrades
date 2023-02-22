@@ -1,6 +1,7 @@
 ﻿@page "/fetchdata"
 @using BlazorTrades.Data
 @using System.Reactive.Linq
+@implements IDisposable
 @inject TradingService TradingService
 
 <PageTitle>Market Data</PageTitle>
@@ -41,7 +42,9 @@ else
 }
 
 @code {
+    private bool _disposed = false;
     private IEnumerable<StockMarketViewModel>? _stocks;
+    private List<IDisposable> _subscriptions = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -49,11 +52,38 @@ else
         
         foreach (var stock in _stocks!)
         {
-            Observable.FromEvent(
+            var disposable = Observable.FromEvent(
                 h => stock.StateUpdated += h,
                 h => stock.StateUpdated -= h)
                 .Throttle(TimeSpan.FromMilliseconds(200))
                 .Subscribe(_ => InvokeAsync(StateHasChanged).ConfigureAwait(false));
+            
+            _subscriptions.Add(disposable);
         }
+    }
+
+    public void Dispose() => Dispose(true);
+
+    private void Dispose(bool disposing)
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            foreach (var stock in _stocks!)
+            {
+                stock.Dispose();
+            }
+
+            foreach (var subscription in _subscriptions)
+            {
+                subscription.Dispose();
+            }
+        }
+
+        _disposed = true;
     }
 }
