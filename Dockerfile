@@ -16,5 +16,6 @@ RUN dotnet publish "BlazorTrades.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 EXPOSE 5287
+ENV ASPNETCORE_URLS="http://0.0.0.0:5287/"
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "BlazorTrades.dll"]
